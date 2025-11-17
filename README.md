@@ -1,2 +1,6 @@
-# LuckyVicky_Haksikmap_back
-luckyvicky haksikmap back
+프로젝트 이름 : 럭키비키 학식맵   
+설명 : 투표 기반으로 학식당 혼잡도를 예측해서, 학생들이 식사 시간 선택을 더 잘 할 수 있게 돕는 웹 서비스  
+사용 예정 기술 :   
+FE :   
+BE : Spring Boot + JPA + H2/MySQL  
+AI :   
