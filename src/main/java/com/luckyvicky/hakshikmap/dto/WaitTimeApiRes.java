@@ -13,4 +13,5 @@ public class WaitTimeApiRes {
     private String time;         // "time"
     private Integer waitTimeMin; // "waitTimeMin"
     private String status;       // "status" (success / fail 등)
+    private int voteCount;
 }

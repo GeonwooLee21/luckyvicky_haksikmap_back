@@ -1,6 +1,8 @@
 package com.luckyvicky.hakshikmap.service;
 
 import com.luckyvicky.hakshikmap.dto.WaitTimeApiRes;
+import com.luckyvicky.hakshikmap.entity.Votes;
+import com.luckyvicky.hakshikmap.repository.VotesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +13,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -20,51 +24,91 @@ import java.util.Map;
 public class WaitTimeService {
 
     private final RestTemplate restTemplate;
+    private final VotesRepository votesRepository;
 
     @Value("${python.wait-time-url}")
-    private String waitTimeUrl;  // application.properties에서 읽어옴
+    private String waitTimeUrl;   // 예: http://43.203.175.98:5000/api/wait-time
 
-    // 파이썬에서 기대하는 포맷: "HH:mm"
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("HH:mm");
+    // ✅ 최근 10분만 사용하는 윈도우 (분 단위)
+    private static final int WINDOW_MINUTES = 10;
 
     /**
-     * 특정 식당에 대해, 특정 시각 기준 대기시간(분)을 파이썬 서버에서 받아온다.
+     * 특정 식당에 대해, 현재 시각 기준
+     * 최근 10분 내 votes 데이터를 모아서 파이썬 서버에 보내고,
+     * 예측 대기시간(분)을 받아온다.
+     *
+     * @param restaurantId 식당 ID
+     * @param now          기준 시각 (보통 LocalDateTime.now())
+     * @return 대기시간(분). 데이터 없음/에러 시 0 (정책에 따라 변경 가능)
      */
-    public int getWaitTime(Long restaurantId, LocalDateTime time) {
+    public int getWaitTime(Long restaurantId, LocalDateTime now) {
 
-        String timeString = time.format(FORMATTER);
+        LocalDateTime from = now.minusMinutes(WINDOW_MINUTES);
 
+        // 1) votes DB에서 최근 10분 데이터 조회
+        List<Votes> votes = votesRepository.findByRestaurantIdAndVotedTimeBetween(
+                restaurantId, from, now
+        );
+
+        // 2) 파이썬으로 보낼 JSON 바디 만들기
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("restaurantId", restaurantId);
-        requestBody.put("timeString", timeString);
+        requestBody.put("baseTime", now.toString());         // ISO-8601 문자열 (예: 2025-11-28T12:30:00)
+        requestBody.put("windowMinutes", WINDOW_MINUTES);
+
+        List<Map<String, Object>> voteDtos = new ArrayList<>();
+        for (Votes v : votes) {
+            Map<String, Object> m = new HashMap<>();
+            // LocalDateTime.toString() → "yyyy-MM-ddTHH:mm:ss" 형식
+            m.put("votedTime", v.getVotedTime().toString());
+            m.put("weight", v.getWeight());
+            m.put("waitingTime", v.getWaitingTime());
+            voteDtos.add(m);
+        }
+        requestBody.put("votes", voteDtos);
 
         try {
-            ResponseEntity<WaitTimeApiRes> response =
-                    restTemplate.postForEntity(waitTimeUrl, requestBody, WaitTimeApiRes.class);
+            // 3) 파이썬 서버 호출
+            log.info("[WaitTime] 요청 → python: url={}, restaurantId={}, voteCount={}, window={}m",
+                    waitTimeUrl, restaurantId, votes.size(), WINDOW_MINUTES);
+
+            var response = restTemplate.postForEntity(
+                    waitTimeUrl,
+                    requestBody,
+                    WaitTimeApiRes.class
+            );
 
             WaitTimeApiRes body = response.getBody();
 
             if (body == null) {
-                log.warn("wait-time API 응답 body 가 null 입니다. restaurantId={}, time={}", restaurantId, timeString);
+                log.warn("[WaitTime] 응답 body null (restaurantId={})", restaurantId);
                 return 0;
             }
 
-            if (!"success".equalsIgnoreCase(body.getStatus())) {
-                log.warn("wait-time API status 가 success 가 아닙니다. status={}, restaurantId={}, time={}",
-                        body.getStatus(), restaurantId, timeString);
-                return 0;
+            log.info("[WaitTime] 응답 ← python: restaurantId={}, status={}, waitTimeMin={}, voteCount={}",
+                    body.getRestaurantId(),
+                    body.getStatus(),
+                    body.getWaitTimeMin(),
+                    body.getVoteCount());
+
+            // 4) 응답 상태에 따라 처리
+            if (!"SUCCESS".equalsIgnoreCase(body.getStatus())) {
+                // NO_DATA / ERROR 등 → 현재 정책은 0분
+                return -1;
             }
 
             if (body.getWaitTimeMin() == null) {
-                log.warn("wait-time API 에서 waitTimeMin 이 null 입니다. restaurantId={}, time={}", restaurantId, timeString);
-                return 0;
+                return -1;
             }
 
-            return body.getWaitTimeMin();
+            int result = body.getWaitTimeMin();
+            if (result < 0) result = 0; // 음수 방지
+
+            return result;
+
         } catch (RestClientException e) {
-            log.error("wait-time API 호출 중 에러 발생. restaurantId={}, time={}", restaurantId, timeString, e);
-            // 에러 나면 일단 0분으로 반환 (정책은 나중에 조정 가능)
+            log.error("[WaitTime] 파이썬 서버 호출 실패 (restaurantId={})", restaurantId, e);
+            // 실패 시 0으로 (혹은 -1 같은 특수값으로 바꿀 수도 있음)
             return 0;
         }
     }
