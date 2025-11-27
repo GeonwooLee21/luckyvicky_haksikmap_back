@@ -26,7 +26,7 @@ public class CongestionService {
      //1분마다 실행.
      //cron = "0 * * * * *"  → 1분마다 실행 (수정 가능)
     @Transactional
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0/5 * * * * *")
     public void updateCurrentCongestions() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime from = now.minusMinutes(10); // 예: 최근 10분간의 투표만 반영
