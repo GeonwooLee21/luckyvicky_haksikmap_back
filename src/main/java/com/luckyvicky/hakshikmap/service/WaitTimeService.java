@@ -35,7 +35,7 @@ public class WaitTimeService {
     /**
      * 특정 식당에 대해, 현재 시각 기준
      * 최근 10분 내 votes 데이터를 모아서 파이썬 서버에 보내고,
-     * 예측 대기시간(분)을 받아온다.
+     * 예측 대기시간(분)을 받아온다..
      *
      * @param restaurantId 식당 ID
      * @param now          기준 시각 (보통 LocalDateTime.now())
