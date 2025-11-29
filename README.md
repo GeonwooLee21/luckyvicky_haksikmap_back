@@ -234,33 +234,33 @@ src/
 ```json
 
 ├─ config
-│   └─ RestTemplateConfig           // spring <-> python 동기 클라이언트 템플릿
+│   └─ RestTemplateConfig           # spring <-> python 동기 클라이언트 템플릿
 │
 ├─ controller
-│   ├─ RestaurantsController        // 학식당 관련 기능 제공
-│   ├─ UsersController              // 유저 관련 기능 제공
-│   ├─ VotesController              // 투표 관련 기능 제공
-│   └─ WaitingLogsController        // (추후 구현) 투표 기록 관련 기능 제공
+│   ├─ RestaurantsController        # 학식당 관련 기능 제공
+│   ├─ UsersController              # 유저 관련 기능 제공
+│   ├─ VotesController              # 투표 관련 기능 제공
+│   └─ WaitingLogsController        # (추후 구현) 투표 기록 관련 기능 제공
 │
 ├─ dto
-│   ├─ RestaurantCongestionRes      // 학식당 혼잡도 DTO
-│   ├─ RestaurantWaitTimeRes        // 학식당 대기시간 DTO
-│   ├─ UserRes                      // 유저 정보 DTO
-│   ├─ UserVoteCountRes             // 유저 투표 횟수 DTO
-│   ├─ VoteReq                      // 투표 정보 DTO
-│   └─ WaitTimeApiRes               // 예상 대기시간 정보 DTO
+│   ├─ RestaurantCongestionRes      # 학식당 혼잡도 DTO
+│   ├─ RestaurantWaitTimeRes        # 학식당 대기시간 DTO
+│   ├─ UserRes                      # 유저 정보 DTO
+│   ├─ UserVoteCountRes             # 유저 투표 횟수 DTO
+│   ├─ VoteReq                      # 투표 정보 DTO
+│   └─ WaitTimeApiRes               # 예상 대기시간 정보 DTO
 │
 ├─ entity
-│   ├─ Restaurants                  // 학식당 엔티티
-│   ├─ Users                        // 유저 엔티티
-│   ├─ Votes                        // 투표 엔티티
-│   └─ WaitingLogs                  // (추후 구현) 투표 기록 엔티티
+│   ├─ Restaurants                  # 학식당 엔티티
+│   ├─ Users                        # 유저 엔티티
+│   ├─ Votes                        # 투표 엔티티
+│   └─ WaitingLogs                  # (추후 구현) 투표 기록 엔티티
 │
 ├─ repository
-│   ├─ RestaurantsRepository        // 학식당 DB
-│   ├─ UsersRepository              // 유저 DB
-│   ├─ VotesRepository              // 투표 정보 DB
-│   └─ WaitingLogsRepository        // (추후 구현) 대기 시간 로그 DB
+│   ├─ RestaurantsRepository        # 학식당 DB
+│   ├─ UsersRepository              # 유저 DB
+│   ├─ VotesRepository              # 투표 정보 DB
+│   └─ WaitingLogsRepository        # (추후 구현) 대기 시간 로그 DB
 │
 └─ service
     ├─ CongestionService            // 학식당 혼잡도 실시간 업데이트 기능 서비스
