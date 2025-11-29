@@ -217,7 +217,7 @@ src/
 
 ## ✨ **API 명세서**
 
-![image.png](attachment:c9b23911-65fd-4221-908b-c58e77343b82:f824b12e-16a5-4dfb-8058-37d102432fbb.png)
+<img width="1195" height="812" alt="image" src="https://github.com/user-attachments/assets/9de0dd53-e609-4ec7-bf9d-3753e362459d" />
 
 [https://flat-leopard-c0d.notion.site/2af564617abf80feaaf0fcb2f227473e?v=2af564617abf80169c10000cde2e446e&source=copy_link](https://www.notion.so/2af564617abf80feaaf0fcb2f227473e?pvs=21)
 
@@ -225,13 +225,13 @@ src/
 
 ## ✨ DB 구성
 
-![image.png](attachment:ec09814c-40ca-42a8-927d-ea46f8588507:6bae8ecc-5ac6-4617-8e35-493800e6cf3b.png)
+<img width="1000" height="805" alt="image (1)" src="https://github.com/user-attachments/assets/4dd4ef6d-46a2-4e08-a8e1-eaefeb3285f2" />
 
 ---
 
 ## 📂 폴더 구조
 
-```json
+```
 
 ├─ config
 │   └─ RestTemplateConfig           # spring <-> python 동기 클라이언트 템플릿
@@ -263,12 +263,12 @@ src/
 │   └─ WaitingLogsRepository        # (추후 구현) 대기 시간 로그 DB
 │
 └─ service
-    ├─ CongestionService            // 학식당 혼잡도 실시간 업데이트 기능 서비스
-    ├─ RestaurantService            // 학식당 혼잡도 조회 서비스
-    ├─ UserCleanupService           // 유저 DB 초기화 서비스
-    ├─ UserService                  // 유저 생성 및 각 유저의 투표 횟수 조회 서비스
-    ├─ VoteService                  // 투표 서비스
-    └─ WaitTimeService              // (추후 구현) 투표 로그 저장 서비스
+    ├─ CongestionService            # 학식당 혼잡도 실시간 업데이트 기능 서비스
+    ├─ RestaurantService            # 학식당 혼잡도 조회 서비스
+    ├─ UserCleanupService           # 유저 DB 초기화 서비스
+    ├─ UserService                  # 유저 생성 및 각 유저의 투표 횟수 조회 서비스
+    ├─ VoteService                  # 투표 서비스
+    └─ WaitTimeService              # (추후 구현) 투표 로그 저장 서비스
     
 ```
 
@@ -325,7 +325,7 @@ src/
 
 - 기준 시각 `baseTime`에서 각 투표 시각까지의 시간 차이를
     
-    ![image.png](attachment:0c5c9166-3031-45a2-8382-bd0cee592d38:image.png)
+    <img width="374" height="81" alt="image (2)" src="https://github.com/user-attachments/assets/27ff5cbf-4f2f-4b80-9317-09f14a0b3a94" />
     
     로 계산한다.
     
@@ -340,11 +340,12 @@ src/
     - 기본형: **wi = weighti** (필요 시 시간 가중치 추가 가능)
 - 각 투표의 대기시간을 **ti**라 할 때, 예측 대기시간은
     
-    ![image.png](attachment:7f4d0b7d-0a1a-4ba4-b52e-b3454c5dcc9b:image.png)
+    <img width="306" height="77" alt="image (3)" src="https://github.com/user-attachments/assets/5912458a-9032-4f16-8c93-95c523bc20b5" />
     
     로 계산한다.
     
-    ![image.png](attachment:9f64b962-de2a-41ab-b9e9-3d74485c0eec:image.png)
+   <img width="521" height="280" alt="image (4)" src="https://github.com/user-attachments/assets/ca7a846c-29fb-4bdf-803f-919917a494e4" />
+
     
 - 결과가 음수일 경우 0으로 보정하고, `round()`를 사용해 정수(분)로 반올림하여 예상 대기시간으로 반환한다.
 
