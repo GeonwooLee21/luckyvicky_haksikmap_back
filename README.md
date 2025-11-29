@@ -370,9 +370,9 @@ src/
 
 ### 가중 평균 대기시간 계산
 
-- 각 유효 투표의 대기시간을 tit_iti (waitingTime) 라고 하면,T^=∑i=1nWi∑i=1n(ti⋅Wi)
+-  각 유효 투표의 대기시간을 ti (waitingTime) 라고 하면
     
-    **예측 대기시간 T^\hat{T}T^** 는 가중 평균으로 계산한다.
+    **예측 대기시간(T)**은 가중 평균으로 계산한다.
     
    <img width="238" height="65" alt="image (6)" src="https://github.com/user-attachments/assets/1d7e4bad-ff5b-4f4e-8d70-06c9c7ba3ff6" />
     
